@@ -1,13 +1,14 @@
 const { Pool } = require('pg');
 
-const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.DB_URL;
-
-console.log('DB URL:', connectionString ? 'VAR' : 'YOK');
-console.log('ENV KEYS:', Object.keys(process.env).filter(k => k.includes('DB') || k.includes('PG') || k.includes('POSTGRES') || k.includes('DATABASE')));
-
 const pool = new Pool({
-  connectionString: connectionString,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT || 5432,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
   ssl: { rejectUnauthorized: false }
 });
+
+console.log('DB bağlanıyor:', process.env.DB_HOST);
 
 module.exports = pool;
