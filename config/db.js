@@ -1,14 +1,8 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  connectionString: 'postgresql://poer_db_user:7rcZVTdlclrCcMhsygkcFo9ECgcqUuAr@dpg-d8c0f34ua318fk3j5f50-a/poer_db',
   ssl: { rejectUnauthorized: false }
 });
-
-console.log('DB bağlanıyor:', process.env.DB_HOST);
 
 module.exports = pool;
