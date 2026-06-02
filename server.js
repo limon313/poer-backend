@@ -52,6 +52,4 @@ app.listen(PORT, async () => {
     `);
     console.log('Tablolar hazir!');
   } catch(e) { console.error('Tablo hata:', e.message); }
-});
-  console.log('POER calisiyor: ' + PORT);
-});
+});                                                                    
