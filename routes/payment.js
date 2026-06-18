@@ -70,5 +70,17 @@ router.get('/history', auth, async (req, res) => {
     res.json(r.rows);
   } catch (err) { res.status(500).json({ error: 'Hata' }); }
 });
-
+router.post('/topup', auth, async (req, res) => {
+  try {
+    const { amount } = req.body;
+    if (!amount) return res.status(400).json({ error: 'Tutar gerekli' });
+    await pool.query('UPDATE users SET balance=balance+$1 WHERE id=$2', [amount, req.userId]);
+    const txId = uuidv4();
+    await pool.query(
+      `INSERT INTO transactions (id, user_id, type, amount, description, status, reference_no) VALUES ($1,$2,'topup',$3,'Bakiye Yukleme','success',$4)`,
+      [txId, req.userId, amount, 'TOP-'+Date.now()]
+    );
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: 'Hata' }); }
+});
 module.exports = router;
