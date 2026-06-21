@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="POER">
 <title>POER</title>
@@ -13,31 +13,21 @@
 body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margin:0 auto;position:relative}
 .screen{display:none;min-height:100vh;padding-bottom:80px}
 .screen.active{display:block}
-
-/* Header */
 .header{padding:54px 20px 20px;display:flex;align-items:center;justify-content:space-between}
 .header-title{font-size:28px;font-weight:800;background:linear-gradient(135deg,#3B7EF6,#00C97A);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .header-sub{font-size:13px;color:var(--t2);margin-top:2px}
-
-/* Balance Card */
 .balance-card{margin:0 20px 20px;background:linear-gradient(135deg,#1A2A4A,#0D1F3C);border:1px solid #2A3F6A;border-radius:20px;padding:24px;position:relative;overflow:hidden}
 .balance-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,#3B7EF620,transparent);border-radius:50%}
 .balance-label{font-size:13px;color:var(--t2);margin-bottom:8px}
 .balance-amount{font-size:36px;font-weight:800;color:var(--t1);margin-bottom:4px}
 .balance-card-num{font-size:12px;color:var(--t2);font-family:monospace;margin-top:12px}
-
-/* Quick Actions */
 .quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 20px;margin-bottom:24px}
-.qa{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;active:scale(.95)}
+.qa{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s}
 .qa:active{transform:scale(.95);background:var(--bg3)}
 .qa-icon{font-size:22px;margin-bottom:6px}
 .qa-label{font-size:11px;color:var(--t2);font-weight:600}
-
-/* Section */
 .section{padding:0 20px;margin-bottom:20px}
 .section-title{font-size:13px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
-
-/* Transaction */
 .tx{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
 .tx-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .tx-info{flex:1}
@@ -46,15 +36,11 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
 .tx-amount{font-size:15px;font-weight:700}
 .tx-amount.out{color:var(--red)}
 .tx-amount.in{color:var(--green)}
-
-/* Bottom Nav */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg2);border-top:1px solid var(--bd);display:flex;padding:8px 0 24px;z-index:100}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;cursor:pointer;transition:all .2s}
 .nav-icon{font-size:22px}
 .nav-label{font-size:10px;color:var(--t2);font-weight:600}
 .nav-item.active .nav-label{color:var(--a1)}
-
-/* Forms */
 .form-card{background:var(--bg2);border:1px solid var(--bd);border-radius:20px;padding:20px;margin:0 20px 16px}
 .form-title{font-size:18px;font-weight:700;color:var(--t1);margin-bottom:16px}
 .input-group{margin-bottom:14px}
@@ -63,26 +49,18 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
 .input:focus{border-color:var(--a1)}
 .btn-primary{width:100%;background:var(--a1);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;transition:opacity .2s}
 .btn-primary:active{opacity:.8}
-.btn-primary:disabled{opacity:.5}
 .btn-green{background:var(--green)}
-
-/* Alert */
 .alert{margin:0 20px 16px;padding:14px 16px;border-radius:12px;font-size:13px;font-weight:600}
 .alert-success{background:#00C97A20;border:1px solid #00C97A44;color:var(--green)}
 .alert-error{background:#FF4D6A20;border:1px solid #FF4D6A44;color:var(--red)}
-
-/* Cards screen */
 .card-item{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
 .card-badge{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#3B7EF6,#7C5CFC);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .card-info{flex:1}
 .card-name{font-size:14px;font-weight:700;color:var(--t1)}
 .card-uid{font-size:11px;color:var(--t2);font-family:monospace;margin-top:3px}
-
 .loading{text-align:center;padding:40px;color:var(--t2)}
 .spinner{display:inline-block;width:24px;height:24px;border:2px solid var(--bd);border-top-color:var(--a1);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Auth screen */
 .auth-screen{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:20px}
 .auth-logo{text-align:center;margin-bottom:40px}
 .auth-logo-text{font-size:48px;font-weight:900;background:linear-gradient(135deg,#3B7EF6,#00C97A);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -90,24 +68,23 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
 .tab-switch{display:flex;background:var(--bg2);border-radius:12px;padding:4px;margin-bottom:20px}
 .tab-btn{flex:1;padding:10px;border-radius:9px;border:none;background:none;color:var(--t2);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
 .tab-btn.active{background:var(--a1);color:#fff}
+.transfer-tabs{display:flex;background:var(--bg2);border-radius:12px;padding:4px;margin:0 20px 16px}
+.transfer-tab-btn{flex:1;padding:10px;border-radius:9px;border:none;background:none;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.transfer-tab-btn.active{background:var(--a1);color:#fff}
 </style>
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
 <div id="auth-screen" class="auth-screen">
   <div class="auth-logo">
     <div class="auth-logo-text">POER</div>
     <div class="auth-logo-sub">Dijital Cüzdan</div>
   </div>
-  
   <div class="tab-switch">
     <button class="tab-btn active" onclick="switchAuth('login')">Giriş Yap</button>
     <button class="tab-btn" onclick="switchAuth('register')">Kayıt Ol</button>
   </div>
-
   <div id="auth-alert"></div>
-
   <div id="login-form">
     <div class="input-group">
       <div class="input-label">Telefon</div>
@@ -119,7 +96,6 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
     </div>
     <button class="btn-primary" onclick="login()">Giriş Yap</button>
   </div>
-
   <div id="register-form" style="display:none">
     <div class="input-group">
       <div class="input-label">Ad Soyad</div>
@@ -137,10 +113,8 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="main-app" style="display:none">
 
-<!-- ANA SAYFA -->
 <div id="screen-home" class="screen active">
   <div class="header">
     <div>
@@ -149,13 +123,11 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
     </div>
     <div style="cursor:pointer;font-size:24px" onclick="logout()">👤</div>
   </div>
-
   <div class="balance-card">
     <div class="balance-label">Toplam Bakiye</div>
     <div class="balance-amount" id="balance-display">₺0,00</div>
     <div class="balance-card-num" id="card-uid-display">Kart yükleniyor...</div>
   </div>
-
   <div class="quick-actions">
     <div class="qa" onclick="showScreen('transfer')">
       <div class="qa-icon">💸</div>
@@ -174,24 +146,27 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
       <div class="qa-label">Geçmiş</div>
     </div>
   </div>
-
   <div class="section">
     <div class="section-title">Son İşlemler</div>
-    <div id="recent-tx">
-      <div class="loading"><div class="spinner"></div><div>Yükleniyor...</div></div>
-    </div>
+    <div id="recent-tx"><div class="loading"><div class="spinner"></div><div>Yükleniyor...</div></div></div>
   </div>
 </div>
 
-<!-- TRANSFER -->
 <div id="screen-transfer" class="screen">
   <div class="header">
     <div style="cursor:pointer;font-size:20px" onclick="showScreen('home')">←</div>
-    <div style="font-size:18px;font-weight:700">IBAN Transfer</div>
+    <div style="font-size:18px;font-weight:700">Transfer</div>
     <div></div>
   </div>
+
+  <div class="transfer-tabs">
+    <button class="transfer-tab-btn active" onclick="switchTransferTab('iban')">IBAN ile</button>
+    <button class="transfer-tab-btn" onclick="switchTransferTab('papara')">Papara No ile</button>
+  </div>
+
   <div id="transfer-alert"></div>
-  <div class="form-card">
+
+  <div id="transfer-iban-form" class="form-card">
     <div class="input-group">
       <div class="input-label">IBAN</div>
       <input class="input" id="tx-iban" type="text" placeholder="TR00 0000 0000 0000 0000 0000 00">
@@ -208,11 +183,30 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
       <div class="input-label">Açıklama (opsiyonel)</div>
       <input class="input" id="tx-desc" type="text" placeholder="Açıklama">
     </div>
-    <button class="btn-primary" onclick="doTransfer()">Transfer Yap</button>
+    <button class="btn-primary" onclick="doTransfer()">IBAN'a Gönder</button>
+  </div>
+
+  <div id="transfer-papara-form" class="form-card" style="display:none">
+    <div class="input-group">
+      <div class="input-label">Papara Numarası</div>
+      <input class="input" id="px-number" type="text" placeholder="1234567890">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Alıcı Adı</div>
+      <input class="input" id="px-name" type="text" placeholder="Ad Soyad">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Tutar (₺)</div>
+      <input class="input" id="px-amount" type="number" placeholder="0.00">
+    </div>
+    <div class="input-group">
+      <div class="input-label">Açıklama (opsiyonel)</div>
+      <input class="input" id="px-desc" type="text" placeholder="Açıklama">
+    </div>
+    <button class="btn-primary btn-green" onclick="doPaparaTransfer()">Papara'ya Gönder</button>
   </div>
 </div>
 
-<!-- YÜKLE -->
 <div id="screen-topup" class="screen">
   <div class="header">
     <div style="cursor:pointer;font-size:20px" onclick="showScreen('home')">←</div>
@@ -230,7 +224,6 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
   </div>
 </div>
 
-<!-- KARTLAR -->
 <div id="screen-cards" class="screen">
   <div class="header">
     <div style="cursor:pointer;font-size:20px" onclick="showScreen('home')">←</div>
@@ -238,14 +231,11 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
     <div></div>
   </div>
   <div class="section">
-    <div id="cards-list">
-      <div class="loading"><div class="spinner"></div><div>Yükleniyor...</div></div>
-    </div>
+    <div id="cards-list"><div class="loading"><div class="spinner"></div><div>Yükleniyor...</div></div></div>
     <button class="btn-primary" style="margin-top:12px" onclick="createVirtualCard()">+ Sanal Kart Oluştur</button>
   </div>
 </div>
 
-<!-- GEÇMİŞ -->
 <div id="screen-history" class="screen">
   <div class="header">
     <div style="cursor:pointer;font-size:20px" onclick="showScreen('home')">←</div>
@@ -253,13 +243,10 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
     <div></div>
   </div>
   <div class="section">
-    <div id="history-list">
-      <div class="loading"><div class="spinner"></div><div>Yükleniyor...</div></div>
-    </div>
+    <div id="history-list"><div class="loading"><div class="spinner"></div><div>Yükleniyor...</div></div></div>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="showScreen('home')" id="nav-home">
     <div class="nav-icon">🏠</div>
@@ -279,14 +266,12 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
   </div>
 </div>
 
-</div><!-- /main-app -->
+</div>
 
 <script>
 const API = 'https://poer-backend.onrender.com/api';
 let token = localStorage.getItem('poer_token');
-let userData = JSON.parse(localStorage.getItem('poer_user') || '{}');
 
-// Başlangıç
 if (token) showApp();
 else document.getElementById('auth-screen').style.display = 'flex';
 
@@ -298,7 +283,6 @@ function showApp() {
 
 function logout() {
   localStorage.removeItem('poer_token');
-  localStorage.removeItem('poer_user');
   token = null;
   document.getElementById('main-app').style.display = 'none';
   document.getElementById('auth-screen').style.display = 'flex';
@@ -312,6 +296,14 @@ function switchAuth(tab) {
   document.getElementById('register-form').style.display = tab==='register'?'block':'none';
 }
 
+function switchTransferTab(tab) {
+  document.querySelectorAll('.transfer-tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0&&tab==='iban')||(i===1&&tab==='papara'));
+  });
+  document.getElementById('transfer-iban-form').style.display = tab==='iban'?'block':'none';
+  document.getElementById('transfer-papara-form').style.display = tab==='papara'?'block':'none';
+}
+
 async function login() {
   const phone = document.getElementById('login-phone').value;
   const password = document.getElementById('login-pass').value;
@@ -321,9 +313,7 @@ async function login() {
     const d = await r.json();
     if (!r.ok) return showAlert('auth-alert',d.error||'Giriş hatası','error');
     token = d.token;
-    userData = d;
     localStorage.setItem('poer_token', token);
-    localStorage.setItem('poer_user', JSON.stringify(d));
     showApp();
   } catch(e) { showAlert('auth-alert','Sunucuya bağlanılamadı','error'); }
 }
@@ -338,9 +328,7 @@ async function register() {
     const d = await r.json();
     if (!r.ok) return showAlert('auth-alert',d.error||'Kayıt hatası','error');
     token = d.token;
-    userData = d;
     localStorage.setItem('poer_token', token);
-    localStorage.setItem('poer_user', JSON.stringify(d));
     showApp();
   } catch(e) { showAlert('auth-alert','Sunucuya bağlanılamadı','error'); }
 }
@@ -352,13 +340,11 @@ async function loadHome() {
     document.getElementById('user-greeting').textContent = 'Merhaba, '+d.name+'!';
     document.getElementById('balance-display').textContent = '₺'+parseFloat(d.balance).toLocaleString('tr-TR',{minimumFractionDigits:2});
   } catch(e){}
-
   try {
     const r = await fetch(API+'/cards',{headers:{Authorization:'Bearer '+token}});
     const cards = await r.json();
     if (cards.length) document.getElementById('card-uid-display').textContent = cards[0].card_uid;
   } catch(e){}
-
   loadHistory('recent-tx', 3);
 }
 
@@ -401,11 +387,25 @@ async function doTransfer() {
   } catch(e) { showAlert('transfer-alert','Sunucu hatası','error'); }
 }
 
+async function doPaparaTransfer() {
+  const papara_number = document.getElementById('px-number').value;
+  const receiver_name = document.getElementById('px-name').value;
+  const amount = document.getElementById('px-amount').value;
+  const description = document.getElementById('px-desc').value;
+  if (!papara_number||!receiver_name||!amount) return showAlert('transfer-alert','Tüm alanlar gerekli','error');
+  try {
+    const r = await fetch(API+'/bank/transfer-papara',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({papara_number,receiver_name,amount:parseFloat(amount),description})});
+    const d = await r.json();
+    if (!r.ok) return showAlert('transfer-alert',d.error||'Transfer hatası','error');
+    showAlert('transfer-alert','Transfer başarılı! Ref: '+d.reference_no,'success');
+    loadHome();
+  } catch(e) { showAlert('transfer-alert','Sunucu hatası','error'); }
+}
+
 async function doTopup() {
   const amount = document.getElementById('topup-amount').value;
   if (!amount) return showAlert('topup-alert','Tutar gir','error');
   try {
-    // Test: direkt DB'ye ekle
     const r = await fetch(API+'/payment/topup',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({amount:parseFloat(amount)})});
     const d = await r.json();
     if (!r.ok) return showAlert('topup-alert',d.error||'Hata','error');
