@@ -71,9 +71,18 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
 .transfer-tabs{display:flex;background:var(--bg2);border-radius:12px;padding:4px;margin:0 20px 16px}
 .transfer-tab-btn{flex:1;padding:10px;border-radius:9px;border:none;background:none;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
 .transfer-tab-btn.active{background:var(--a1);color:#fff}
+.qr-display{display:flex;flex-direction:column;align-items:center;padding:24px}
+.qr-box{background:#fff;padding:16px;border-radius:16px;margin-bottom:20px}
+.qr-amount{font-size:28px;font-weight:800;color:var(--t1);margin-bottom:4px}
+.qr-merchant{font-size:14px;color:var(--t2);margin-bottom:16px}
+.qr-timer{font-size:13px;color:#F5A623;font-weight:600;margin-bottom:16px}
+.qr-status-waiting{display:flex;align-items:center;gap:8px;color:var(--t2);font-size:13px}
+.qr-status-paid{color:var(--green);font-size:16px;font-weight:700}
+.scan-input-box{background:var(--bg2);border:1px solid var(--bd);border-radius:20px;padding:20px;margin:0 20px}
 </style>
 </head>
 <body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <div id="auth-screen" class="auth-screen">
   <div class="auth-logo">
@@ -133,6 +142,10 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
       <div class="qa-icon">💸</div>
       <div class="qa-label">Transfer</div>
     </div>
+    <div class="qa" onclick="showScreen('qr')">
+      <div class="qa-icon">📱</div>
+      <div class="qa-label">QR Öde</div>
+    </div>
     <div class="qa" onclick="showScreen('topup')">
       <div class="qa-icon">➕</div>
       <div class="qa-label">Yükle</div>
@@ -140,10 +153,6 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
     <div class="qa" onclick="showScreen('cards')">
       <div class="qa-icon">💳</div>
       <div class="qa-label">Kartlar</div>
-    </div>
-    <div class="qa" onclick="showScreen('history')">
-      <div class="qa-icon">📋</div>
-      <div class="qa-label">Geçmiş</div>
     </div>
   </div>
   <div class="section">
@@ -207,6 +216,63 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
   </div>
 </div>
 
+<div id="screen-qr" class="screen">
+  <div class="header">
+    <div style="cursor:pointer;font-size:20px" onclick="showScreen('home')">←</div>
+    <div style="font-size:18px;font-weight:700">QR Öde</div>
+    <div></div>
+  </div>
+
+  <div class="qr-tabs" style="display:flex;background:var(--bg2);border-radius:12px;padding:4px;margin:0 20px 16px">
+    <button class="qr-tab-btn active" onclick="switchQrTab('create')" style="flex:1;padding:10px;border-radius:9px;border:none;background:var(--a1);color:#fff;font-size:13px;font-weight:600;cursor:pointer">QR Oluştur</button>
+    <button class="qr-tab-btn" onclick="switchQrTab('scan')" style="flex:1;padding:10px;border-radius:9px;border:none;background:none;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer">Kod Gir & Öde</button>
+  </div>
+
+  <div id="qr-create-panel">
+    <div id="qr-create-alert"></div>
+    <div class="form-card" id="qr-form-box">
+      <div class="form-title">Tahsilat için QR Oluştur</div>
+      <div class="input-group">
+        <div class="input-label">Tutar (₺)</div>
+        <input class="input" id="qr-amount" type="number" placeholder="0.00">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Açıklama (opsiyonel)</div>
+        <input class="input" id="qr-desc" type="text" placeholder="Açıklama">
+      </div>
+      <button class="btn-primary" onclick="createQr()">QR Oluştur</button>
+    </div>
+
+    <div id="qr-result-box" style="display:none">
+      <div class="qr-display">
+        <div class="qr-box" id="qr-canvas"></div>
+        <div class="qr-amount" id="qr-result-amount">₺0,00</div>
+        <div class="qr-merchant" id="qr-result-desc"></div>
+        <div class="qr-timer" id="qr-timer">Kalan süre: 5:00</div>
+        <div class="qr-status-waiting" id="qr-waiting-text">
+          <div class="spinner" style="width:16px;height:16px"></div>
+          <span>Ödeme bekleniyor...</span>
+        </div>
+        <div class="qr-status-paid" id="qr-paid-text" style="display:none">✓ Ödeme Alındı!</div>
+        <button class="btn-primary" style="margin-top:20px" onclick="resetQrCreate()">Yeni QR Oluştur</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="qr-scan-panel" style="display:none">
+    <div id="qr-scan-alert"></div>
+    <div class="scan-input-box">
+      <div class="input-group">
+        <div class="input-label">QR Kodu</div>
+        <input class="input" id="scan-code" type="text" placeholder="QR-XXXXXXXX">
+      </div>
+      <div id="scan-preview"></div>
+      <button class="btn-primary" onclick="checkQrCode()" style="margin-bottom:10px">Kodu Sorgula</button>
+      <button class="btn-primary btn-green" id="scan-pay-btn" onclick="payQrCode()" style="display:none">Ödemeyi Onayla</button>
+    </div>
+  </div>
+</div>
+
 <div id="screen-topup" class="screen">
   <div class="header">
     <div style="cursor:pointer;font-size:20px" onclick="showScreen('home')">←</div>
@@ -256,13 +322,17 @@ body{background:var(--bg);color:var(--t1);min-height:100vh;max-width:430px;margi
     <div class="nav-icon">💸</div>
     <div class="nav-label">Transfer</div>
   </div>
-  <div class="nav-item" onclick="showScreen('topup')" id="nav-topup">
-    <div class="nav-icon">➕</div>
-    <div class="nav-label">Yükle</div>
+  <div class="nav-item" onclick="showScreen('qr')" id="nav-qr">
+    <div class="nav-icon">📱</div>
+    <div class="nav-label">QR</div>
   </div>
   <div class="nav-item" onclick="showScreen('cards')" id="nav-cards">
     <div class="nav-icon">💳</div>
     <div class="nav-label">Kartlar</div>
+  </div>
+  <div class="nav-item" onclick="showScreen('history')" id="nav-history">
+    <div class="nav-icon">📋</div>
+    <div class="nav-label">Geçmiş</div>
   </div>
 </div>
 
@@ -441,6 +511,110 @@ async function createVirtualCard() {
   } catch(e) {}
 }
 
+function switchQrTab(tab) {
+  document.querySelectorAll('.qr-tab-btn').forEach((b,i) => {
+    const isCreate = i===0;
+    b.style.background = (isCreate && tab==='create') || (!isCreate && tab==='scan') ? 'var(--a1)' : 'none';
+    b.style.color = (isCreate && tab==='create') || (!isCreate && tab==='scan') ? '#fff' : 'var(--t2)';
+  });
+  document.getElementById('qr-create-panel').style.display = tab==='create'?'block':'none';
+  document.getElementById('qr-scan-panel').style.display = tab==='scan'?'block':'none';
+}
+
+let qrTimerInterval = null;
+let qrStatusInterval = null;
+let currentQrCode = null;
+
+async function createQr() {
+  const amount = document.getElementById('qr-amount').value;
+  const description = document.getElementById('qr-desc').value;
+  if (!amount) return showAlert('qr-create-alert','Tutar gir','error');
+  try {
+    const r = await fetch(API+'/qr/create',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({amount:parseFloat(amount),description})});
+    const d = await r.json();
+    if (!r.ok) return showAlert('qr-create-alert',d.error||'Hata','error');
+
+    currentQrCode = d.qr_code;
+    document.getElementById('qr-form-box').style.display = 'none';
+    document.getElementById('qr-result-box').style.display = 'block';
+    document.getElementById('qr-result-amount').textContent = '₺'+parseFloat(d.amount).toLocaleString('tr-TR',{minimumFractionDigits:2});
+    document.getElementById('qr-result-desc').textContent = d.merchant_name + (description ? ' - '+description : '');
+    document.getElementById('qr-waiting-text').style.display = 'flex';
+    document.getElementById('qr-paid-text').style.display = 'none';
+
+    document.getElementById('qr-canvas').innerHTML = '';
+    new QRCode(document.getElementById('qr-canvas'), { text: d.qr_code, width: 200, height: 200 });
+
+    let remaining = d.expires_in_seconds;
+    clearInterval(qrTimerInterval);
+    qrTimerInterval = setInterval(() => {
+      remaining--;
+      const m = Math.floor(remaining/60), s = remaining%60;
+      document.getElementById('qr-timer').textContent = 'Kalan süre: '+m+':'+(s<10?'0':'')+s;
+      if (remaining <= 0) { clearInterval(qrTimerInterval); clearInterval(qrStatusInterval); }
+    }, 1000);
+
+    clearInterval(qrStatusInterval);
+    qrStatusInterval = setInterval(async () => {
+      try {
+        const sr = await fetch(API+'/qr/status/'+currentQrCode,{headers:{Authorization:'Bearer '+token}});
+        const sd = await sr.json();
+        if (sd.status === 'paid') {
+          document.getElementById('qr-waiting-text').style.display = 'none';
+          document.getElementById('qr-paid-text').style.display = 'block';
+          clearInterval(qrStatusInterval);
+          clearInterval(qrTimerInterval);
+          loadHome();
+        }
+      } catch(e) {}
+    }, 3000);
+  } catch(e) { showAlert('qr-create-alert','Sunucu hatası','error'); }
+}
+
+function resetQrCreate() {
+  clearInterval(qrTimerInterval);
+  clearInterval(qrStatusInterval);
+  document.getElementById('qr-form-box').style.display = 'block';
+  document.getElementById('qr-result-box').style.display = 'none';
+  document.getElementById('qr-amount').value = '';
+  document.getElementById('qr-desc').value = '';
+}
+
+let scannedQrCode = null;
+
+async function checkQrCode() {
+  const code = document.getElementById('scan-code').value.trim();
+  if (!code) return showAlert('qr-scan-alert','Kod gir','error');
+  try {
+    const r = await fetch(API+'/qr/status/'+code,{headers:{Authorization:'Bearer '+token}});
+    const d = await r.json();
+    if (!r.ok) { showAlert('qr-scan-alert',d.error||'Kod bulunamadı','error'); document.getElementById('scan-pay-btn').style.display='none'; return; }
+    scannedQrCode = code;
+    document.getElementById('scan-preview').innerHTML = `
+      <div class="form-card" style="background:var(--bg3);margin:0 0 14px">
+        <div style="font-size:13px;color:var(--t2)">Satıcı: ${d.merchant_name}</div>
+        <div style="font-size:24px;font-weight:800;margin:6px 0">₺${parseFloat(d.amount).toLocaleString('tr-TR',{minimumFractionDigits:2})}</div>
+        <div style="font-size:13px;color:var(--t2)">${d.description}</div>
+      </div>
+    `;
+    document.getElementById('scan-pay-btn').style.display = 'block';
+  } catch(e) { showAlert('qr-scan-alert','Sunucu hatası','error'); }
+}
+
+async function payQrCode() {
+  if (!scannedQrCode) return;
+  try {
+    const r = await fetch(API+'/qr/pay/'+scannedQrCode,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token}});
+    const d = await r.json();
+    if (!r.ok) return showAlert('qr-scan-alert',d.error||'Ödeme hatası','error');
+    showAlert('qr-scan-alert','Ödeme başarılı! '+d.merchant_name+' adlı satıcıya ₺'+d.amount+' gönderildi.','success');
+    document.getElementById('scan-code').value = '';
+    document.getElementById('scan-preview').innerHTML = '';
+    document.getElementById('scan-pay-btn').style.display = 'none';
+    loadHome();
+  } catch(e) { showAlert('qr-scan-alert','Sunucu hatası','error'); }
+}
+
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -450,6 +624,7 @@ function showScreen(name) {
   if (name==='home') loadHome();
   if (name==='history') loadHistory('history-list');
   if (name==='cards') loadCards();
+  if (name!=='qr') { clearInterval(qrTimerInterval); clearInterval(qrStatusInterval); }
 }
 
 function showAlert(id, msg, type) {
