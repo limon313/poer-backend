@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POER Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,'Segoe UI',system-ui,sans-serif}
+:root{--bg:#0A0E1A;--bg2:#111827;--bg3:#1A2235;--a1:#3B7EF6;--green:#00C97A;--red:#FF4D6A;--amber:#F5A623;--t1:#F0F4FF;--t2:#8899BB;--bd:#1E2D4A}
+body{background:var(--bg);color:var(--t1);min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+.login-wrap{max-width:380px;margin:80px auto;padding:0 20px}
+.login-title{font-size:32px;font-weight:800;text-align:center;margin-bottom:8px;background:linear-gradient(135deg,#3B7EF6,#00C97A);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-sub{text-align:center;color:var(--t2);font-size:13px;margin-bottom:32px}
+.input{width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:13px 16px;color:var(--t1);font-size:15px;outline:none;margin-bottom:12px}
+.input:focus{border-color:var(--a1)}
+.btn{width:100%;background:var(--a1);color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer}
+.btn:hover{opacity:.9}
+.alert{padding:12px 14px;border-radius:9px;font-size:13px;margin-bottom:12px}
+.alert-error{background:#FF4D6A20;border:1px solid #FF4D6A44;color:var(--red)}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(135deg,#3B7EF6,#00C97A);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logout-btn{background:var(--bg2);border:1px solid var(--bd);color:var(--t2);padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer}
+
+.tabs{display:flex;gap:8px;margin-bottom:24px;background:var(--bg2);border-radius:12px;padding:4px}
+.tab{flex:1;padding:11px;border-radius:9px;border:none;background:none;font-size:13px;font-weight:600;cursor:pointer;color:var(--t2)}
+.tab.active{background:var(--a1);color:#fff}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:18px}
+.stat-label{font-size:12px;color:var(--t2);margin-bottom:8px}
+.stat-value{font-size:24px;font-weight:800;color:var(--t1)}
+.stat-icon{font-size:20px;margin-bottom:8px}
+
+.panel{display:none}
+.panel.active{display:block}
+
+table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:14px;overflow:hidden}
+th{text-align:left;padding:12px 14px;font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--bd);background:var(--bg3)}
+td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--bd)}
+tr:last-child td{border-bottom:none}
+.badge{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:600}
+.badge-green{background:#00C97A20;color:var(--green)}
+.badge-red{background:#FF4D6A20;color:var(--red)}
+.badge-amber{background:#F5A62320;color:var(--amber)}
+
+.table-wrap{overflow-x:auto;border-radius:14px}
+.loading{text-align:center;padding:40px;color:var(--t2)}
+.spinner{display:inline-block;width:24px;height:24px;border:2px solid var(--bd);border-top-color:var(--a1);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="login-wrap">
+  <div class="login-title">POER Admin</div>
+  <div class="login-sub">Yönetici Paneli</div>
+  <div id="login-alert"></div>
+  <input class="input" id="admin-phone" type="tel" placeholder="Telefon">
+  <input class="input" id="admin-pass" type="password" placeholder="Şifre">
+  <button class="btn" onclick="adminLogin()">Giriş Yap</button>
+</div>
+
+<div id="admin-panel" style="display:none">
+<div class="wrap">
+  <div class="topbar">
+    <div class="logo">POER Admin</div>
+    <button class="logout-btn" onclick="adminLogout()">Çıkış Yap</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchPanel('summary')">Özet</button>
+    <button class="tab" onclick="switchPanel('users')">Kullanıcılar</button>
+    <button class="tab" onclick="switchPanel('transactions')">İşlemler</button>
+    <button class="tab" onclick="switchPanel('adjust')">Bakiye Düzelt</button>
+  </div>
+
+  <div id="panel-summary" class="panel active">
+    <div class="stats-grid" id="stats-grid">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+    <div class="table-wrap">
+      <table id="volume-table">
+        <thead><tr><th>Tip</th><th>Adet</th><th>Toplam</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="panel-users" class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ad</th><th>Telefon</th><th>Bakiye</th><th>Kayıt</th></tr></thead>
+        <tbody id="users-table"><tr><td colspan="4" class="loading"><div class="spinner"></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="panel-transactions" class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Kullanıcı</th><th>Tip</th><th>Tutar</th><th>Açıklama</th><th>Tarih</th></tr></thead>
+        <tbody id="tx-table"><tr><td colspan="5" class="loading"><div class="spinner"></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="panel-adjust" class="panel">
+    <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:24px;max-width:420px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:16px">Manuel Bakiye Düzeltme</div>
+      <div id="adjust-alert"></div>
+      <input class="input" id="adj-userid" type="text" placeholder="Kullanıcı ID (UUID)">
+      <input class="input" id="adj-amount" type="number" placeholder="Tutar (eksi için - kullan)">
+      <input class="input" id="adj-reason" type="text" placeholder="Sebep">
+      <button class="btn" onclick="adjustBalance()">Uygula</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const API = 'https://poer-backend.onrender.com/api';
+let token = localStorage.getItem('poer_admin_token');
+
+if (token) showPanel();
+
+async function adminLogin() {
+  const phone = document.getElementById('admin-phone').value;
+  const password = document.getElementById('admin-pass').value;
+  try {
+    const r = await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,password})});
+    const d = await r.json();
+    if (!r.ok) { document.getElementById('login-alert').innerHTML='<div class="alert alert-error">'+(d.error||'Giriş hatası')+'</div>'; return; }
+    token = d.token;
+    // admin yetkisi kontrolu icin once test edelim
+    const testR = await fetch(API+'/admin/summary',{headers:{Authorization:'Bearer '+token}});
+    if (testR.status === 403) { document.getElementById('login-alert').innerHTML='<div class="alert alert-error">Bu hesabın admin yetkisi yok</div>'; return; }
+    localStorage.setItem('poer_admin_token', token);
+    showPanel();
+  } catch(e) { document.getElementById('login-alert').innerHTML='<div class="alert alert-error">Sunucu hatası</div>'; }
+}
+
+function adminLogout() {
+  localStorage.removeItem('poer_admin_token');
+  token = null;
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'block';
+}
+
+function showPanel() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-panel').style.display = 'block';
+  loadSummary();
+}
+
+function switchPanel(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['summary','users','transactions','adjust'];
+    t.classList.toggle('active', names[i]===name);
+  });
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if (name==='summary') loadSummary();
+  if (name==='users') loadUsers();
+  if (name==='transactions') loadTransactions();
+}
+
+async function loadSummary() {
+  try {
+    const r = await fetch(API+'/admin/summary',{headers:{Authorization:'Bearer '+token}});
+    const d = await r.json();
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Toplam Kullanıcı</div><div class="stat-value">${d.total_users}</div></div>
+      <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Toplam Bakiye</div><div class="stat-value">₺${parseFloat(d.total_balance).toLocaleString('tr-TR',{minimumFractionDigits:2})}</div></div>
+      <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">Toplam İşlem</div><div class="stat-value">${d.total_transactions}</div></div>
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">Bugünkü İşlem</div><div class="stat-value">${d.transactions_today}</div></div>
+    `;
+    document.querySelector('#volume-table tbody').innerHTML = d.volume_by_type.map(v => `
+      <tr><td>${v.type}</td><td>${v.count}</td><td>₺${parseFloat(v.total).toLocaleString('tr-TR',{minimumFractionDigits:2})}</td></tr>
+    `).join('');
+  } catch(e) {}
+}
+
+async function loadUsers() {
+  try {
+    const r = await fetch(API+'/admin/users',{headers:{Authorization:'Bearer '+token}});
+    const users = await r.json();
+    document.getElementById('users-table').innerHTML = users.map(u => `
+      <tr><td>${u.name}</td><td>${u.phone}</td><td>₺${parseFloat(u.balance).toLocaleString('tr-TR',{minimumFractionDigits:2})}</td><td>${new Date(u.created_at).toLocaleDateString('tr-TR')}</td></tr>
+    `).join('');
+  } catch(e) {}
+}
+
+async function loadTransactions() {
+  try {
+    const r = await fetch(API+'/admin/transactions',{headers:{Authorization:'Bearer '+token}});
+    const txs = await r.json();
+    document.getElementById('tx-table').innerHTML = txs.map(t => `
+      <tr>
+        <td>${t.user_name}</td>
+        <td><span class="badge ${t.type==='topup'?'badge-green':t.type==='payment'?'badge-red':'badge-amber'}">${t.type}</span></td>
+        <td>₺${parseFloat(t.amount).toLocaleString('tr-TR',{minimumFractionDigits:2})}</td>
+        <td>${t.description||''}</td>
+        <td>${new Date(t.created_at).toLocaleString('tr-TR')}</td>
+      </tr>
+    `).join('');
+  } catch(e) {}
+}
+
+async function adjustBalance() {
+  const user_id = document.getElementById('adj-userid').value;
+  const amount = document.getElementById('adj-amount').value;
+  const reason = document.getElementById('adj-reason').value;
+  if (!user_id||!amount) { document.getElementById('adjust-alert').innerHTML='<div class="alert alert-error">Kullanıcı ID ve tutar gerekli</div>'; return; }
+  try {
+    const r = await fetch(API+'/admin/adjust-balance',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({user_id,amount:parseFloat(amount),reason})});
+    const d = await r.json();
+    if (!r.ok) { document.getElementById('adjust-alert').innerHTML='<div class="alert alert-error">'+(d.error||'Hata')+'</div>'; return; }
+    document.getElementById('adjust-alert').innerHTML='<div class="alert" style="background:#00C97A20;border:1px solid #00C97A44;color:#00C97A">Başarılı!</div>';
+  } catch(e) { document.getElementById('adjust-alert').innerHTML='<div class="alert alert-error">Sunucu hatası</div>'; }
+}
+</script>
+</body>
+</html>
