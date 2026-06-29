@@ -1,4 +1,3 @@
-await pool.query('CREATE EXTENSION IF NOT EXISTS pgcrypto;');
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
